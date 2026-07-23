@@ -4,8 +4,15 @@ const port = 3000;
 
 // Rotta base
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Resonus /// Main ");
 });
+
+// router
+const router = require("./routers/router");
+app.use("/products", router);
+
+// Public
+app.use(express.static("public"));
 
 // Listen
 app.listen(port, () => {
