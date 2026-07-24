@@ -1,6 +1,18 @@
 const express = require("express");
+const cors = require("cors");
+const router = require("./routers/router");
+const otherRouters = require("./routers/otherRouters");
 const app = express();
 const port = 3000;
+
+// Cors
+app.use(cors());
+
+// images
+app.use(express.static("public"));
+
+// body parser
+app.use(express.json());
 
 // Rotta base
 app.get("/", (req, res) => {
@@ -8,11 +20,8 @@ app.get("/", (req, res) => {
 });
 
 // router
-const router = require("./routers/router");
 app.use("/products", router);
-
-// Public
-app.use(express.static("public"));
+app.use("/product", otherRouters);
 
 // Listen
 app.listen(port, () => {
