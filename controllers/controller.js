@@ -2,7 +2,7 @@ const connection = require("../db");
 
 function index(req, res) {
   const sqlProduct =
-    "SELECT products.*, categories.name AS category_name, categories.slug AS category_slug FROM dbaudio.products LEFT JOIN dbaudio.categories ON products.category_id = categories.id";
+    "SELECT products.*, categories.name AS category_name, categories.slug AS category_slug FROM products LEFT JOIN categories ON products.category_id = categories.id";
   connection.query(sqlProduct, (err, result) => {
     // Negativo
     if (err) {
