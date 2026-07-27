@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/controller.js");
-const controllerFilter = require("../controllers/filterController.js");
+const otherControllers = require("../controllers/otherController.js");
 
 // bestsllers
-router.get("/bestSeller", controllerFilter.bestSeller);
+router.get("/bestSeller", otherControllers.bestSeller);
+
+router.get("/", otherControllers.searchbar);
 
 // router.post("/:id/", );
 
