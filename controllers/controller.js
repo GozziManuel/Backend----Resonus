@@ -2,8 +2,8 @@ const connection = require("../db");
 
 function index(req, res) {
   // GEtting PARAMS
-  const { category, sort, available, featured } = req.query;
-
+  const { category, sort, available, featured, price } = req.query;
+  const realPrice = parseInt(price);
   let sqlProduct =
     "SELECT products.*, categories.name AS category_name, categories.slug AS category_slug FROM products LEFT JOIN categories ON products.category_id = categories.id";
 
@@ -28,6 +28,25 @@ function index(req, res) {
   // IN EVIDENZA
   if (featured) {
     FilterCondition.push(`is_featured = 1`);
+  }
+  // slider Prezzo
+  if (price) {
+    if (realPrice === 150) {
+      FilterCondition.push(`products.price < ?`);
+      queryParams.push(realPrice);
+    }
+    if (realPrice === 300) {
+      FilterCondition.push(`products.price >= 300 AND products.price < 450`);
+      queryParams.push(realPrice);
+    }
+    if (realPrice === 450) {
+      FilterCondition.push(`products.price >= 450 AND products.price < 600`);
+      queryParams.push(realPrice);
+    }
+    if (realPrice === 600) {
+      FilterCondition.push(`products.price > ?`);
+      queryParams.push(realPrice);
+    }
   }
 
   // CREATING FULL SQL
@@ -108,6 +127,7 @@ function show(req, res) {
     }
     console.log(result);
     const [productDetailed] = result;
+    console.log([productDetailed]);
 
     res.json({ result: productDetailed });
   });
