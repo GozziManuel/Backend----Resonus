@@ -2,8 +2,11 @@ const connection = require("../db");
 
 function index(req, res) {
   // GEtting PARAMS
-  const { category, sort, available, featured, price } = req.query;
+  const { category, sort, available, featured, price, search } = req.query;
   const realPrice = parseInt(price);
+
+  // FORMATTING SEARCH INPUT
+
   let sqlProduct =
     "SELECT products.*, categories.name AS category_name, categories.slug AS category_slug FROM products LEFT JOIN categories ON products.category_id = categories.id";
 
@@ -14,6 +17,15 @@ function index(req, res) {
   let queryParams = [];
 
   // Filters
+  // searchbar
+  const formattedSearch = search ? search.toLowerCase().trim() : "";
+  const fullQuery = `%${formattedSearch}%`;
+
+  if (formattedSearch) {
+    FilterCondition.push(`products.name LIKE ?`);
+    queryParams.push(fullQuery);
+  }
+
   // Select Category
   if (category) {
     FilterCondition.push(`categories.name = ?`);
@@ -84,6 +96,8 @@ function index(req, res) {
       sqlProduct += " ORDER BY products.id ASC"; // Ordine predefinito
       break;
   }
+  console.log(queryParams);
+
   connection.query(sqlProduct, queryParams, (err, result) => {
     // Negativo
     if (err) {
@@ -100,6 +114,7 @@ function index(req, res) {
         ...el,
       };
     });
+    console.log(product);
 
     //    sending element
     res.json({
