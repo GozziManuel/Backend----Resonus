@@ -114,7 +114,6 @@ function index(req, res) {
         ...el,
       };
     });
-    console.log(product);
 
     //    sending element
     res.json({
@@ -140,9 +139,7 @@ function show(req, res) {
         error: err,
       });
     }
-    console.log(result);
     const [productDetailed] = result;
-    console.log([productDetailed]);
 
     res.json({ result: productDetailed });
   });

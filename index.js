@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const router = require("./routers/router");
 const otherRouters = require("./routers/otherRouters");
+const cartRouter = require("./routers/cartRouter");
 const app = express();
 const port = 3000;
 
@@ -22,6 +23,9 @@ app.get("/", (req, res) => {
 // router
 app.use("/products", router);
 app.use("/product", otherRouters);
+
+// cart
+app.use("/audio", cartRouter);
 
 // Listen
 app.listen(port, () => {

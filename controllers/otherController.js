@@ -64,7 +64,106 @@ function searchbar(req, res) {
         // image: `http://localhost:3000/${el.image}`,
       };
     });
-    console.log(product);
+
+    res.json({
+      success: true,
+      results: product,
+    });
+  });
+}
+// searchbar
+function Cart(req, res) {
+  // GEtting PARAMS
+  const {
+    id,
+    sku,
+    name,
+    slug,
+    category_id,
+    price,
+    stock,
+    sales_count,
+    is_featured,
+    image_url,
+    second_image,
+    third_image,
+    description,
+    specs,
+    presets_config,
+    hotspots,
+  } = req.body;
+
+  //
+  if (!req.body) {
+    return res.status(500).json({
+      success: false,
+      message: "body non esistente",
+    });
+  }
+
+  // QUERY
+  let sqlProduct =
+    "INSERT INTO cart_items (id, sku, name, slug, category_id, price, stock, sales_count, is_featured, image_url, second_image, third_image, description, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity);";
+
+  //
+  connection.query(
+    sqlProduct,
+    [
+      id,
+      sku,
+      name,
+      slug,
+      category_id,
+      price,
+      stock,
+      sales_count,
+      is_featured,
+      image_url,
+      second_image,
+      third_image,
+      description,
+    ],
+    (err, result) => {
+      // Negativo
+      if (err) {
+        console.error("Errore durante il recupero dei prodotti:", err);
+        return res.status(500).json({
+          success: false,
+          message: "Errore interno del server nel recupero dei dati.",
+          error: err.message,
+        });
+      }
+      // positivo
+      console.log(result);
+
+      res.json({
+        success: true,
+        results: result,
+      });
+    },
+  );
+}
+
+// getting CartProduct
+function cartProduct(req, res) {
+  const sqlProduct = "SELECT * FROM cart_items;";
+  connection.query(sqlProduct, (err, result) => {
+    // Negativo
+    if (err) {
+      console.error("Errore durante il recupero dei prodotti:", err);
+      return res.status(500).json({
+        success: false,
+        message: "Errore interno del server nel recupero dei dati.",
+        error: err.message,
+      });
+    }
+    // positivo
+    const product = result.map((el) => {
+      return {
+        ...el,
+        // image: `http://localhost:3000/${el.image}`,
+      };
+    });
 
     res.json({
       success: true,
@@ -73,4 +172,4 @@ function searchbar(req, res) {
   });
 }
 //
-module.exports = { bestSeller, searchbar };
+module.exports = { bestSeller, searchbar, Cart, cartProduct };

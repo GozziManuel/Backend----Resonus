@@ -2,11 +2,10 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/controller.js");
 const otherControllers = require("../controllers/otherController.js");
-const cartRouter = require("../controllers/otherController.js");
 
-router.get("/", controller.index);
+router.get("/cartitems", otherControllers.cartProduct);
 
-router.get("/:slug", controller.show);
+router.post("/addToCart", otherControllers.Cart);
 
 // router.post("/:id/", );
 
