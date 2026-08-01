@@ -25,7 +25,7 @@ app.use("/products", router);
 app.use("/product", otherRouters);
 
 // cart
-app.use("/audio", cartRouter);
+app.use("/cart", cartRouter);
 
 // Listen
 app.listen(port, () => {

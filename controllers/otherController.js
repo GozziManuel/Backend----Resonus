@@ -71,7 +71,8 @@ function searchbar(req, res) {
     });
   });
 }
-// searchbar
+
+// ************ ADDING TO CART
 function Cart(req, res) {
   // GEtting PARAMS
   const {
@@ -92,7 +93,7 @@ function Cart(req, res) {
     presets_config,
     hotspots,
   } = req.body;
-
+  const quantity = req.body.quantity ?? 1;
   //
   if (!req.body) {
     return res.status(500).json({
@@ -103,7 +104,7 @@ function Cart(req, res) {
 
   // QUERY
   let sqlProduct =
-    "INSERT INTO cart_items (id, sku, name, slug, category_id, price, stock, sales_count, is_featured, image_url, second_image, third_image, description, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity);";
+    "INSERT INTO cart_items ( id, sku, name, slug, category_id, price, stock, sales_count, is_featured, image_url, second_image, third_image, description, quantity ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE quantity = GREATEST(1, quantity + VALUES(quantity));";
 
   //
   connection.query(
@@ -122,6 +123,7 @@ function Cart(req, res) {
       second_image,
       third_image,
       description,
+      quantity,
     ],
     (err, result) => {
       // Negativo
@@ -134,7 +136,6 @@ function Cart(req, res) {
         });
       }
       // positivo
-      console.log(result);
 
       res.json({
         success: true,
@@ -144,7 +145,7 @@ function Cart(req, res) {
   );
 }
 
-// getting CartProduct
+//  ********************* getting CartProduct
 function cartProduct(req, res) {
   const sqlProduct = "SELECT * FROM cart_items;";
   connection.query(sqlProduct, (err, result) => {
@@ -171,5 +172,40 @@ function cartProduct(req, res) {
     });
   });
 }
+
+//  ********************* removing CartProduct
+function RemoveCartProduct(req, res) {
+  paramSlug = req.params.slug;
+
+  // Removing Item
+  const sqlRemove = "DELETE FROM cart_items WHERE slug = ?";
+  connection.query(sqlRemove, [paramSlug], (err, result) => {
+    // Negativo
+    if (err) {
+      console.error("Errore durante il recupero dei prodotti:", err);
+      return res.status(500).json({
+        success: false,
+        message: "Errore interno del server nel recupero dei dati.",
+        error: err.message,
+      });
+    }
+
+    // Getting Refreshed Product List
+    const sqlProduct = "SELECT * FROM cart_items";
+
+    connection.query(sqlProduct, (err, result) => {
+      res.json({
+        success: true,
+        results: result,
+      });
+    });
+  });
+}
 //
-module.exports = { bestSeller, searchbar, Cart, cartProduct };
+module.exports = {
+  bestSeller,
+  searchbar,
+  Cart,
+  cartProduct,
+  RemoveCartProduct,
+};

@@ -123,7 +123,7 @@ function index(req, res) {
   });
 }
 
-// Getting detailed
+//  *********** Getting detailed
 function show(req, res) {
   paramSlug = req.params.slug;
 

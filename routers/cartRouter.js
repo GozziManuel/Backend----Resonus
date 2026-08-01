@@ -7,6 +7,6 @@ router.get("/cartitems", otherControllers.cartProduct);
 
 router.post("/addToCart", otherControllers.Cart);
 
-// router.post("/:id/", );
+router.delete("/removeToCart/:slug", otherControllers.RemoveCartProduct);
 
 module.exports = router;
