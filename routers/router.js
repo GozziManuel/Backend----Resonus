@@ -8,6 +8,4 @@ router.get("/", controller.index);
 
 router.get("/:slug", controller.show);
 
-// router.post("/:id/", );
-
 module.exports = router;
